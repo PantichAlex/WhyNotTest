@@ -17,8 +17,15 @@ var app=new Vue({
             
                 ws.on('accept',(data)=>{
                 });
-                ws.on('ready',(data)=>{
-                    this.c=data.result;
+
+                ws.on('ready', ()=>{
+                    ws.emit('get');
+                
+                });
+                ws.on('push',(data)=>{
+                    this.a=data.a;
+                    this.b=data.b;
+                    this.c=data.c;
                 });
 
                 ws.on('error', (data)=>{
