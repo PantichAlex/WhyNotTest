@@ -30,6 +30,12 @@
                                 Результать сложения: [[c]]
                           </p>
                     </div>
+                    <div v-if="error" class="form-group">
+                          <p class="alert alert-danger">
+                               Ошибка: [[error]]
+                               
+                          </p>
+                    </div>
                     <div class="form-group">
                           <button class="btn btn-success" @click="sum"> Рассчитать</button> 
                     </div>

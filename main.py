@@ -9,14 +9,15 @@ app.config['CELERY_RESULT_BACKEND']='redis://localhost:6379/0'
 
 celery=Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
+
 socket=SocketIO(app)
 
 
 @celery.task()
 def summ(a,b):
-    result={"result":a+b}
-    socket.emit('result', result)
-    return result
+    c=a+b
+    return c
+     
 
 @socket.on('connect')
 def connect():
@@ -27,10 +28,13 @@ def sumController(data):
     try:
         a=int(data['a'])
         b=int(data['b'])
-        summ.delay(a,b)
+        task=summ.delay(a,b)
         emit('accept', {"message":"accept"})
-    except:
-        emit('error', {"message":"values is not integer"})
+        task.wait()
+        result=task.get()
+        emit('ready', {'result': result})
+    except ValueError:
+        emit('error', {"message":"Входящие значения должны быть целыми числами"})
 
 @app.route("/")
 def index():
